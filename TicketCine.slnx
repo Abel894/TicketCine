@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/specs/" />
+  <Project Path="TicketCine.Application/TicketCine.Application.csproj" />
+  <Project Path="TicketCine.Domain/TicketCine.Domain.csproj" />
+  <Project Path="TicketCine.Infrastructure/TicketCine.Infrastructure.csproj" />
+  <Project Path="TicketCine.Tests/TicketCine.Tests.csproj" />
+  <Project Path="TicketCine.Web/TicketCine.Web.csproj" />
+</Solution>
