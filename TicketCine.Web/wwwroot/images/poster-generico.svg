@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900" role="img" aria-label="Poster genérico">
+  <defs>
+	<linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+	  <stop offset="0%" stop-color="#f1f3f5"/>
+	  <stop offset="100%" stop-color="#dee2e6"/>
+	</linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#g)"/>
+  <rect x="80" y="120" width="440" height="660" rx="16" fill="#ced4da" stroke="#adb5bd" stroke-width="8"/>
+  <circle cx="300" cy="350" r="72" fill="#adb5bd"/>
+  <rect x="185" y="470" width="230" height="28" rx="8" fill="#adb5bd"/>
+  <rect x="170" y="520" width="260" height="20" rx="8" fill="#adb5bd"/>
+  <rect x="210" y="560" width="180" height="20" rx="8" fill="#adb5bd"/>
+  <text x="300" y="680" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="34" fill="#6c757d">Sin póster</text>
+</svg>

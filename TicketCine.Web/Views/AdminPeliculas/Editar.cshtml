@@ -1,0 +1,116 @@
+@model EditarPeliculaRequest
+@{
+    ViewData["Title"] = "Editar Película - TicketCine";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4>Editar Película</h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Titulo" class="form-label">Título *</label>
+                            <input asp-for="Titulo" class="form-control" required>
+                            <span asp-validation-for="Titulo" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Sinopsis" class="form-label">Sinopsis *</label>
+                            <textarea asp-for="Sinopsis" class="form-control" rows="4" required></textarea>
+                            <span asp-validation-for="Sinopsis" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Genero" class="form-label">Género *</label>
+                                    <input asp-for="Genero" class="form-control" required>
+                                    <span asp-validation-for="Genero" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="DuracionMinutos" class="form-label">Duración (minutos) *</label>
+                                    <input asp-for="DuracionMinutos" type="number" class="form-control" min="1" required>
+                                    <span asp-validation-for="DuracionMinutos" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Clasificacion" class="form-label">Clasificación *</label>
+                                    <select asp-for="Clasificacion" class="form-select" required>
+                                        <option value="">-- Selecciona una clasificación --</option>
+                                        <option value="G">G (Público General)</option>
+                                        <option value="PG">PG (Parental Guidance)</option>
+                                        <option value="PG-13">PG-13</option>
+                                        <option value="R">R (Restringida)</option>
+                                        <option value="NC-17">NC-17</option>
+                                    </select>
+                                    <span asp-validation-for="Clasificacion" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Activo" class="form-label">
+                                        <input asp-for="Activo" type="checkbox" class="form-check-input">
+                                        Activa
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Póster actual -->
+                        @if (!string.IsNullOrEmpty(Model.RutaPosterActual))
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Póster Actual</label>
+                                <div>
+                                    <img src="@Model.RutaPosterActual" alt="Póster actual" style="max-height: 200px;">
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Cambiar póster -->
+                        <div class="mb-3">
+                            <label asp-for="Poster" class="form-label">Cambiar Póster (Imagen)</label>
+                            <input asp-for="Poster" type="file" class="form-control" accept=".jpg,.jpeg,.png">
+                            <small class="form-text text-muted">Deja en blanco si no deseas cambiar. Formatos: JPG, JPEG, PNG. Máx. 5 MB</small>
+                            <span asp-validation-for="Poster" class="text-danger small"></span>
+                        </div>
+
+                        <input type="hidden" asp-for="RutaPosterActual" />
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Actualizar Película
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

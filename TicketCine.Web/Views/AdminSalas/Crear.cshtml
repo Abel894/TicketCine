@@ -1,0 +1,87 @@
+@model CrearSalaRequest
+@{
+    ViewData["Title"] = "Crear Sala - TicketCine";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4>Crear Nueva Sala</h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label asp-for="Nombre" class="form-label">Nombre de la Sala *</label>
+                            <input asp-for="Nombre" class="form-control" placeholder="Ej: Sala 1, Premium, IMAX" required>
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Filas" class="form-label">Filas *</label>
+                                    <input asp-for="Filas" type="number" class="form-control" min="1" placeholder="Ej: 8" required>
+                                    <span asp-validation-for="Filas" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Columnas" class="form-label">Columnas *</label>
+                                    <input asp-for="Columnas" type="number" class="form-control" min="1" placeholder="Ej: 10" required>
+                                    <span asp-validation-for="Columnas" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="totalAsientos" class="alert alert-info">
+                            Total de asientos: <strong>0</strong>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Crear Sala
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filasInput = document.querySelector('[name="Filas"]');
+            const columnasInput = document.querySelector('[name="Columnas"]');
+            const totalAsientosDiv = document.getElementById('totalAsientos');
+
+            function actualizarTotal() {
+                const filas = parseInt(filasInput.value) || 0;
+                const columnas = parseInt(columnasInput.value) || 0;
+                const total = filas * columnas;
+                totalAsientosDiv.querySelector('strong').textContent = total;
+            }
+
+            filasInput.addEventListener('change', actualizarTotal);
+            columnasInput.addEventListener('change', actualizarTotal);
+            filasInput.addEventListener('input', actualizarTotal);
+            columnasInput.addEventListener('input', actualizarTotal);
+
+            actualizarTotal(); // Inicializar en caso de valores previos
+        });
+    </script>
+}

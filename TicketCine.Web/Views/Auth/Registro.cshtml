@@ -1,0 +1,72 @@
+@model TicketCine.Application.DTOs.RegistroUsuarioRequest
+
+@{
+    ViewData["Title"] = "Registro de Usuario";
+}
+
+<link rel="stylesheet" href="~/css/auth.css" />
+
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Crear una cuenta</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error en el formulario:</strong>
+                <ul class="mb-0">
+                    @foreach (var modelState in ViewData.ModelState.Values)
+                    {
+                        @foreach (var error in modelState.Errors)
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    }
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form asp-action="Registro" method="post" novalidate>
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <!-- Campo Nombre -->
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label">Nombre completo:</label>
+                <input asp-for="Nombre" type="text" class="form-control" placeholder="Juan Pérez" required>
+                <span asp-validation-for="Nombre" class="invalid-feedback d-block"></span>
+            </div>
+
+            <!-- Campo Correo -->
+            <div class="mb-3">
+                <label asp-for="Correo" class="form-label">Correo electrónico:</label>
+                <input asp-for="Correo" type="email" class="form-control" placeholder="correo@ejemplo.com" required>
+                <span asp-validation-for="Correo" class="invalid-feedback d-block"></span>
+            </div>
+
+            <!-- Campo Contraseña -->
+            <div class="mb-3">
+                <label asp-for="Contrasena" class="form-label">Contraseña:</label>
+                <input asp-for="Contrasena" type="password" class="form-control" placeholder="Mínimo 8 caracteres" required>
+                <span asp-validation-for="Contrasena" class="invalid-feedback d-block"></span>
+                <small class="form-text text-muted">Mínimo 8 caracteres, incluir mayúsculas, minúsculas y números.</small>
+            </div>
+
+            <!-- Botón Enviar -->
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+            </div>
+        </form>
+
+        <!-- Enlace a Login -->
+        <hr>
+        <p class="text-center mb-0">
+            ¿Ya tienes cuenta?
+            <a asp-action="Login">Inicia sesión aquí</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

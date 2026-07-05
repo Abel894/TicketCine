@@ -1,0 +1,106 @@
+@model List<FuncionResponse>
+@{
+    ViewData["Title"] = "Gestión de Funciones - TicketCine";
+}
+
+<div class="container-fluid mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>Gestión de Funciones</h1>
+        </div>
+    </div>
+
+    <!-- Mensajes de éxito/error -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Botón de crear -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <a href="@Url.Action("Crear")" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Crear Nueva Función
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla de funciones -->
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No hay funciones registradas.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Película</th>
+                        <th>Sala</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var funcion in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@funcion.TituloPelicula</strong>
+                            </td>
+                            <td>@funcion.NombreSala</td>
+                            <td>@funcion.FechaHora.ToString("dd/MM/yyyy")</td>
+                            <td>@funcion.FechaHora.ToString("HH:mm")</td>
+                            <td>$@funcion.Precio.ToString("N2")</td>
+                            <td>
+                                @if (funcion.Activo)
+                                {
+                                    <span class="badge bg-success">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactiva</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Editar", new { id = funcion.Id })" class="btn btn-warning btn-sm">
+                                    Editar
+                                </a>
+
+                                <form method="post" action="@Url.Action("Eliminar", new { id = funcion.Id })" 
+                                      style="display: inline;" 
+                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta función?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <!-- Scripts específicos si es necesario -->
+}

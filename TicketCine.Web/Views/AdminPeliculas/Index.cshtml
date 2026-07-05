@@ -1,0 +1,111 @@
+@model List<PeliculaResponse>
+@{
+    ViewData["Title"] = "Gestión de Películas - TicketCine";
+}
+
+<div class="container-fluid mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>Gestión de Películas</h1>
+        </div>
+    </div>
+
+    <!-- Mensajes de éxito/error -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Botón de crear -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <a href="@Url.Action("Crear")" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Crear Nueva Película
+            </a>
+        </div>
+    </div>
+
+    <!-- Tabla de películas -->
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No hay películas registradas.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Título</th>
+                        <th>Género</th>
+                        <th>Duración</th>
+                        <th>Clasificación</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pelicula in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@pelicula.Titulo</strong>
+                                @if (!string.IsNullOrEmpty(pelicula.RutaPoster))
+                                {
+                                    <br />
+                                    <small class="text-muted">
+                                        <img src="@pelicula.RutaPoster" alt="@pelicula.Titulo" style="height: 50px; margin-top: 5px;">
+                                    </small>
+                                }
+                            </td>
+                            <td>@pelicula.Genero</td>
+                            <td>@pelicula.DuracionMinutos min</td>
+                            <td>@pelicula.Clasificacion</td>
+                            <td>
+                                @if (pelicula.Activo)
+                                {
+                                    <span class="badge bg-success">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactiva</span>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Editar", new { id = pelicula.Id })" class="btn btn-warning btn-sm">
+                                    Editar
+                                </a>
+
+                                <form method="post" action="@Url.Action("Eliminar", new { id = pelicula.Id })" 
+                                      style="display: inline;" 
+                                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta película?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <!-- Scripts específicos si es necesario -->
+}

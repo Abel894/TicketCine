@@ -1,0 +1,115 @@
+@model EditarFuncionRequest
+@{
+    ViewData["Title"] = "Editar Función - TicketCine";
+    var peliculas = ViewBag.Peliculas as List<Pelicula> ?? new List<Pelicula>();
+    var salas = ViewBag.Salas as List<Sala> ?? new List<Sala>();
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4>Editar Función</h4>
+                </div>
+
+                <div class="card-body">
+                    <form method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="PeliculaId" class="form-label">Película *</label>
+                                    <select asp-for="PeliculaId" class="form-select" required id="peliculaSelect">
+                                        <option value="">-- Selecciona una película --</option>
+                                        @foreach (var pelicula in peliculas)
+                                        {
+                                            <option value="@pelicula.Id"
+                                                    data-duracion="@pelicula.DuracionMinutos">
+                                                @pelicula.Titulo (@pelicula.DuracionMinutos min)
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="PeliculaId" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="SalaId" class="form-label">Sala *</label>
+                                    <select asp-for="SalaId" class="form-select" required>
+                                        <option value="">-- Selecciona una sala --</option>
+                                        @foreach (var sala in salas)
+                                        {
+                                            <option value="@sala.Id">
+                                                @sala.Nombre (@sala.Filas x @sala.Columnas)
+                                            </option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SalaId" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="FechaHora" class="form-label">Fecha y Hora *</label>
+                                    <input asp-for="FechaHora" type="datetime-local" class="form-control" required>
+                                    <span asp-validation-for="FechaHora" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Precio" class="form-label">Precio ($) *</label>
+                                    <input asp-for="Precio" type="number" step="0.01" min="0" class="form-control" required>
+                                    <span asp-validation-for="Precio" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Activo" class="form-label">
+                                <input asp-for="Activo" type="checkbox" class="form-check-input">
+                                Activa
+                            </label>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                Actualizar Función
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const peliculaSelect = document.getElementById('peliculaSelect');
+
+            if (peliculaSelect) {
+                peliculaSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    const duracion = selectedOption.dataset.duracion;
+                    console.log('Película seleccionada: ' + this.value + ', Duración: ' + duracion + ' minutos');
+                });
+            }
+        });
+    </script>
+}

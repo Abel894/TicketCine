@@ -1,0 +1,265 @@
+﻿@model MapaSalaResponse
+@{
+    ViewData["Title"] = "Seleccionar Asientos - TicketCine";
+}
+
+<div class="container-lg mt-4 pb-5">
+
+    <!-- Encabezado -->
+    <div class="mb-3">
+        <a href="javascript:history.back();" class="btn btn-outline-secondary btn-sm mb-2">
+            &larr; Volver a funciones
+        </a>
+        <h2 class="mb-1">Seleccionar Asientos</h2>
+        <p class="text-muted mb-0">
+            <strong>@Model.TituloPelicula</strong> &mdash;
+            @Model.NombreSala &mdash;
+            @Model.FechaHora.ToString("dd/MM/yyyy HH:mm") &mdash;
+            Precio por asiento: <strong>S/ @Model.Precio.ToString("N2")</strong>
+        </p>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="d-flex flex-wrap gap-4 mb-3 align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <span class="muestra-asiento" style="background:#198754;"></span>
+            <small>Libre</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="muestra-asiento" style="background:#0d6efd;"></span>
+            <small>Seleccionado</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="muestra-asiento" style="background:#adb5bd;"></span>
+            <small>Reservado</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="muestra-asiento" style="background:#dc3545;"></span>
+            <small>Vendido</small>
+        </div>
+    </div>
+
+    <!-- Pantalla (simulada) -->
+    <div class="d-flex justify-content-center mb-1">
+        <div class="pantalla-cine">PANTALLA</div>
+    </div>
+
+    <!-- Mapa de asientos -->
+    <div class="d-flex justify-content-center mb-4">
+        <div id="mapaAsientos">
+            @for (int fila = 1; fila <= Model.Filas; fila++)
+            {
+                <div class="fila-asientos">
+                    <span class="etiqueta-fila">@((char)('A' + fila - 1))</span>
+
+                    @for (int columna = 1; columna <= Model.Columnas; columna++)
+                    {
+                        var asiento = Model.Asientos.FirstOrDefault(a => a.Fila == fila && a.Columna == columna);
+                        if (asiento != null)
+                        {
+                            var esLibre    = asiento.Estado == "Libre";
+                            var claseEstado = asiento.Estado switch
+                            {
+                                "Libre"     => "asiento-libre",
+                                "Reservado" => "asiento-reservado",
+                                _           => "asiento-vendido"
+                            };
+                            var etiqueta = $"{(char)('A' + fila - 1)}{columna}";
+
+                            <button type="button"
+                                    class="asiento @claseEstado"
+                                    data-id="@asiento.Id"
+                                    data-etiqueta="@etiqueta"
+                                    title="@etiqueta — @asiento.Estado"
+                                    disabled="@(esLibre ? null : "disabled")">
+                            </button>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Panel resumen -->
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body py-3">
+                    <div class="row text-center g-0">
+                        <div class="col-4 border-end">
+                            <div class="fs-3 fw-bold text-primary" id="txtCantidad">0</div>
+                            <div class="text-muted small">Asientos</div>
+                        </div>
+                        <div class="col-4 border-end">
+                            <div class="fs-3 fw-bold text-success" id="txtTotal">S/ 0.00</div>
+                            <div class="text-muted small">Total</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="fs-6 fw-semibold text-secondary pt-2" id="txtLista">—</div>
+                            <div class="text-muted small">Seleccionados</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <button type="button" id="btnLimpiar" class="btn btn-outline-secondary btn-sm" disabled>
+                        Limpiar selección
+                    </button>
+                    <button type="button" id="btnContinuar" class="btn btn-primary" disabled>
+                        Continuar a reserva &rarr;
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const PRECIO = @Model.Precio.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+        let seleccionados = []; // [{ id, etiqueta }]
+
+        // Adjuntar listener solo a asientos libres
+        document.querySelectorAll('.asiento-libre').forEach(btn => {
+            btn.addEventListener('click', toggleAsiento);
+        });
+
+        function toggleAsiento() {
+            const id = this.dataset.id;
+            const etiqueta = this.dataset.etiqueta;
+            const idx = seleccionados.findIndex(a => a.id === id);
+
+            if (idx > -1) {
+                // Deseleccionar -> vuelve a verde
+                seleccionados.splice(idx, 1);
+                this.classList.remove('asiento-seleccionado');
+                this.classList.add('asiento-libre');
+            } else {
+                // Seleccionar -> azul
+                seleccionados.push({ id, etiqueta });
+                this.classList.remove('asiento-libre');
+                this.classList.add('asiento-seleccionado');
+            }
+            actualizarResumen();
+        }
+
+        function actualizarResumen() {
+            const n = seleccionados.length;
+            document.getElementById('txtCantidad').textContent = n;
+            document.getElementById('txtTotal').textContent =
+                'S/ ' + (n * PRECIO).toFixed(2);
+            document.getElementById('txtLista').textContent =
+                n > 0 ? seleccionados.map(a => a.etiqueta).join(', ') : '—';
+            document.getElementById('btnContinuar').disabled = n === 0;
+            document.getElementById('btnLimpiar').disabled  = n === 0;
+        }
+
+        document.getElementById('btnLimpiar').addEventListener('click', function () {
+            seleccionados = [];
+            document.querySelectorAll('.asiento-seleccionado').forEach(btn => {
+                btn.classList.remove('asiento-seleccionado');
+                btn.classList.add('asiento-libre');
+            });
+            actualizarResumen();
+        });
+
+        document.getElementById('btnContinuar').addEventListener('click', function () {
+            // Sprint 3: aquí se enviará la selección al servidor
+            alert('Reserva en desarrollo (Sprint 3).\nAsientos: ' +
+                  seleccionados.map(a => a.etiqueta).join(', '));
+        });
+    </script>
+}
+
+<style>
+    /* ---- Pantalla ---- */
+    .pantalla-cine {
+        width: min(580px, 95vw);
+        text-align: center;
+        padding: 8px;
+        background: #e9ecef;
+        border: 2px solid #adb5bd;
+        border-radius: 6px 6px 0 0;
+        font-weight: 700;
+        font-size: .78rem;
+        letter-spacing: 6px;
+        color: #6c757d;
+        margin-bottom: 10px;
+    }
+
+    /* ---- Grid de asientos ---- */
+    #mapaAsientos {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .fila-asientos {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .etiqueta-fila {
+        width: 22px;
+        text-align: right;
+        margin-right: 4px;
+        font-size: .75rem;
+        font-weight: 700;
+        color: #6c757d;
+        user-select: none;
+    }
+
+    /* ---- Botón base ---- */
+    .asiento {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border: none;
+        border-radius: 5px 5px 3px 3px;
+        transition: transform .1s ease, box-shadow .1s ease;
+    }
+
+    /* Libre — verde */
+    .asiento-libre {
+        background: #198754;
+        cursor: pointer;
+    }
+    .asiento-libre:hover {
+        background: #157347;
+        transform: scale(1.12);
+    }
+
+    /* Seleccionado — azul sólido */
+    .asiento-seleccionado {
+        background: #0d6efd;
+        cursor: pointer;
+        transform: scale(1.1);
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, .4);
+    }
+    .asiento-seleccionado:hover {
+        background: #0b5ed7;
+    }
+
+    /* Reservado — gris */
+    .asiento-reservado {
+        background: #adb5bd;
+        cursor: not-allowed;
+        opacity: .8;
+    }
+
+    /* Vendido — rojo */
+    .asiento-vendido {
+        background: #dc3545;
+        cursor: not-allowed;
+        opacity: .85;
+    }
+
+    /* ---- Muestras de leyenda ---- */
+    .muestra-asiento {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border-radius: 3px;
+    }
+</style>

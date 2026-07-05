@@ -1,0 +1,80 @@
+@model TicketCine.Application.DTOs.LoginRequest
+
+@{
+    ViewData["Title"] = "Inicio de Sesión";
+}
+
+<link rel="stylesheet" href="~/css/auth.css" />
+
+<div class="auth-container">
+    <div class="auth-form">
+        <h2>Iniciar Sesión</h2>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Values.Any(v => v.Errors.Any()))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error en el formulario:</strong>
+                <ul class="mb-0">
+                    @foreach (var modelState in ViewData.ModelState.Values)
+                    {
+                        @foreach (var error in modelState.Errors)
+                        {
+                            <li>@error.ErrorMessage</li>
+                        }
+                    }
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form asp-action="Login" method="post" novalidate>
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <!-- Campo Correo -->
+            <div class="mb-3">
+                <label asp-for="Correo" class="form-label">Correo electrónico:</label>
+                <input asp-for="Correo" type="email" class="form-control" placeholder="correo@ejemplo.com" required>
+                <span asp-validation-for="Correo" class="invalid-feedback d-block"></span>
+            </div>
+
+            <!-- Campo Contraseña -->
+            <div class="mb-3">
+                <label asp-for="Contrasena" class="form-label">Contraseña:</label>
+                <input asp-for="Contrasena" type="password" class="form-control" placeholder="Tu contraseña" required>
+                <span asp-validation-for="Contrasena" class="invalid-feedback d-block"></span>
+            </div>
+
+            <!-- Botón Enviar -->
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
+            </div>
+
+            <!-- Checkbox Recuérdame -->
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="recuerdame" name="recuerdame">
+                <label class="form-check-label" for="recuerdame">
+                    Recuérdame en este dispositivo
+                </label>
+            </div>
+        </form>
+
+        <!-- Enlace a Registro -->
+        <hr>
+        <p class="text-center mb-0">
+            ¿No tienes cuenta?
+            <a asp-action="Registro">Regístrate aquí</a>
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

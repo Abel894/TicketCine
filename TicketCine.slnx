@@ -1,5 +1,8 @@
 <Solution>
-  <Folder Name="/specs/" />
+  <Folder Name="/specs/">
+    <File Path="../../../Downloads/01-Especificacion-Sprint1-Identidad.md" />
+    <File Path="../../../Downloads/02-Especificacion-Sprint2-Cartelera-Asientos.md" />
+  </Folder>
   <Project Path="TicketCine.Application/TicketCine.Application.csproj" />
   <Project Path="TicketCine.Domain/TicketCine.Domain.csproj" />
   <Project Path="TicketCine.Infrastructure/TicketCine.Infrastructure.csproj" />

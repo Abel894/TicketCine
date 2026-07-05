@@ -1,0 +1,52 @@
+@model List<CarteleraItemResponse>
+@{
+    ViewData["Title"] = "Cartelera - TicketCine";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Cartelera de Películas</h1>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info">
+            No hay películas disponibles en este momento.
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var pelicula in Model)
+            {
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <!-- Poster -->
+                        <img src="@(string.IsNullOrEmpty(pelicula.RutaPoster) ? Url.Content("~/images/poster-generico.svg") : pelicula.RutaPoster)"
+                             class="card-img-top"
+                             alt="@pelicula.Titulo"
+                             style="height: 300px; object-fit: cover;">
+
+                        <div class="card-body">
+                            <h5 class="card-title">@pelicula.Titulo</h5>
+                            <p class="card-text text-muted">@pelicula.Genero</p>
+                            <p class="card-text small">@pelicula.Sinopsis</p>
+                            <p class="card-text">
+                                <strong>Duración:</strong> @pelicula.DuracionMinutos min <br>
+                                <strong>Clasificación:</strong> @pelicula.Clasificacion
+                            </p>
+                        </div>
+
+                        <div class="card-footer bg-white border-top">
+                            <a href="@Url.Action("Funciones", new { peliculaId = pelicula.Id })" class="btn btn-primary btn-sm w-100">
+                                Ver Funciones
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <!-- Scripts específicos si es necesario -->
+}
