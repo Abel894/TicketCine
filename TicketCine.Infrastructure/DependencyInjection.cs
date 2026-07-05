@@ -27,9 +27,13 @@ namespace TicketCine.Infrastructure
             services.AddScoped<ISalaRepository, SalaRepository>();
             services.AddScoped<IFuncionRepository, FuncionRepository>();
             services.AddScoped<IAsientoRepository, AsientoRepository>();
+            services.AddScoped<IReservaRepository, ReservaRepository>();
+            services.AddScoped<IVentaRepository, VentaRepository>();
 
             // Registrar servicios de aplicación
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IReservaService, ReservaService>();
+            services.AddScoped<IVentaService, VentaService>();
             services.AddScoped<IArchivoService, ArchivoService>();
 
             return services;

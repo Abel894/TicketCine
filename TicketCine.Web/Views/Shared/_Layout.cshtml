@@ -35,6 +35,7 @@
                                     @User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><a class="dropdown-item" asp-controller="Reserva" asp-action="MisReservas">Mis reservas</a></li>
                                     <li><a class="dropdown-item" href="#">Mi Perfil</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Cerrar Sesión</a></li>

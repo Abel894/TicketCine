@@ -16,6 +16,9 @@ namespace TicketCine.Infrastructure.Data
         public DbSet<Sala> Salas { get; set; } = null!;
         public DbSet<Funcion> Funciones { get; set; } = null!;
         public DbSet<Asiento> Asientos { get; set; } = null!;
+        public DbSet<Reserva> Reservas { get; set; } = null!;
+        public DbSet<AsientoReserva> AsientosReserva { get; set; } = null!;
+        public DbSet<Venta> Ventas { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -215,6 +218,114 @@ namespace TicketCine.Infrastructure.Data
                 // Índice compuesto para búsquedas rápidas
                 entity.HasIndex(a => new { a.FuncionId, a.Fila, a.Columna })
                     .HasDatabaseName("idx_asientos_funcion_fila_columna");
+            });
+
+            // Configurar tabla Reserva
+            modelBuilder.Entity<Reserva>(entity =>
+            {
+                entity.ToTable("reservas");
+                entity.HasKey(r => r.Id);
+
+                entity.Property(r => r.UsuarioId)
+                    .IsRequired();
+
+                entity.Property(r => r.FuncionId)
+                    .IsRequired();
+
+                entity.Property(r => r.FechaCreacion)
+                    .IsRequired()
+                    .HasColumnType("timestamp without time zone");
+
+                entity.Property(r => r.FechaExpiracion)
+                    .IsRequired()
+                    .HasColumnType("timestamp without time zone");
+
+                entity.Property(r => r.Estado)
+                    .IsRequired()
+                    .HasConversion(
+                        v => v.ToString(),
+                        v => (EstadoReserva)Enum.Parse(typeof(EstadoReserva), v))
+                    .HasMaxLength(20);
+
+                entity.HasOne(r => r.Usuario)
+                    .WithMany()
+                    .HasForeignKey(r => r.UsuarioId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("fk_reservas_usuario_id");
+
+                entity.HasOne(r => r.Funcion)
+                    .WithMany()
+                    .HasForeignKey(r => r.FuncionId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasConstraintName("fk_reservas_funcion_id");
+
+                entity.HasIndex(r => new { r.UsuarioId, r.Estado })
+                    .HasDatabaseName("idx_reservas_usuario_estado");
+            });
+
+            // Configurar tabla AsientoReserva
+            modelBuilder.Entity<AsientoReserva>(entity =>
+            {
+                entity.ToTable("asientos_reserva");
+                entity.HasKey(ar => ar.Id);
+
+                entity.Property(ar => ar.ReservaId)
+                    .IsRequired();
+
+                entity.Property(ar => ar.AsientoId)
+                    .IsRequired();
+
+                entity.HasOne(ar => ar.Reserva)
+                    .WithMany(r => r.Asientos)
+                    .HasForeignKey(ar => ar.ReservaId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_asientos_reserva_reserva_id");
+
+                entity.HasOne(ar => ar.Asiento)
+                    .WithMany()
+                    .HasForeignKey(ar => ar.AsientoId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_asientos_reserva_asiento_id");
+
+                entity.HasIndex(ar => new { ar.ReservaId, ar.AsientoId })
+                    .IsUnique()
+                    .HasDatabaseName("idx_asientos_reserva_reserva_asiento_unique");
+            });
+
+            // Configurar tabla Venta
+            modelBuilder.Entity<Venta>(entity =>
+            {
+                entity.ToTable("ventas");
+                entity.HasKey(v => v.Id);
+
+                entity.Property(v => v.ReservaId)
+                    .IsRequired();
+
+                entity.Property(v => v.MetodoPago)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(v => v.MontoTotal)
+                    .IsRequired()
+                    .HasColumnType("numeric(10, 2)");
+
+                entity.Property(v => v.FechaVenta)
+                    .IsRequired()
+                    .HasColumnType("timestamp without time zone");
+
+                entity.Property(v => v.CodigoQr)
+                    .IsRequired()
+                    .HasMaxLength(250);
+
+                entity.HasOne(v => v.Reserva)
+                    .WithOne()
+                    .HasForeignKey<Venta>(v => v.ReservaId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("fk_ventas_reserva_id");
+
+                entity.HasIndex(v => v.ReservaId)
+                    .IsUnique()
+                    .HasDatabaseName("idx_ventas_reserva_id_unique");
             });
 
             // Seed inicial de Roles

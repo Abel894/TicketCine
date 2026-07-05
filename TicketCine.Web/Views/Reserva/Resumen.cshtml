@@ -1,0 +1,98 @@
+@model TicketCine.Web.Models.ReservaResumenViewModel
+@{
+    ViewData["Title"] = "Resumen de Reserva";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            @if (TempData["ErrorMessage"] is string errorMessage)
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+            @if (TempData["SuccessMessage"] is string successMessage)
+            {
+                <div class="alert alert-success">@successMessage</div>
+            }
+
+            <div class="card shadow-sm mb-3">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Resumen de Reserva</h5>
+                    <span class="badge bg-light text-primary">Código: @Model.CodigoReserva</span>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Película:</strong> @Model.TituloPelicula</p>
+                    <p class="mb-1"><strong>Sala:</strong> @Model.NombreSala</p>
+                    <p class="mb-1"><strong>Función:</strong> @Model.FechaHoraFuncion.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p class="mb-1"><strong>Asientos:</strong> @string.Join(", ", Model.Asientos)</p>
+                    <p class="mb-1"><strong>Cantidad:</strong> @Model.CantidadAsientos</p>
+                    <p class="mb-0"><strong>Total:</strong> S/ @Model.Total.ToString("N2")</p>
+                </div>
+            </div>
+
+            <div class="alert alert-warning d-flex justify-content-between align-items-center" role="alert">
+                <span><strong>Tiempo restante para pagar:</strong></span>
+                <span id="timer" class="fs-5 fw-bold">--:--</span>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">Pago simulado</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="@Url.Action("ConfirmarPago", "Reserva")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="reservaId" value="@Model.ReservaId" />
+
+                        <div class="mb-3">
+                            <label for="metodoPago" class="form-label">Método de pago</label>
+                            <select id="metodoPago" name="metodoPago" class="form-select" required>
+                                <option value="">Seleccione...</option>
+                                <option value="Tarjeta">Tarjeta</option>
+                                <option value="Yape">Yape</option>
+                                <option value="Plin">Plin</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" id="btnConfirmarPago" class="btn btn-success w-100">
+                            Confirmar pago
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let restante = @Model.TiempoRestanteSegundos;
+        const timerEl = document.getElementById('timer');
+        const btnPagar = document.getElementById('btnConfirmarPago');
+
+        function renderTimer() {
+            const minutos = Math.floor(restante / 60);
+            const segundos = restante % 60;
+            timerEl.textContent = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+
+            if (restante <= 0) {
+                btnPagar.disabled = true;
+                timerEl.classList.add('text-danger');
+                timerEl.textContent = '00:00';
+                return false;
+            }
+
+            return true;
+        }
+
+        renderTimer();
+
+        const interval = setInterval(() => {
+            restante--;
+            const activo = renderTimer();
+            if (!activo) {
+                clearInterval(interval);
+            }
+        }, 1000);
+    </script>
+}

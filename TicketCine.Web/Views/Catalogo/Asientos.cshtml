@@ -117,9 +117,10 @@
 @section Scripts {
     <script>
         const PRECIO = @Model.Precio.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+        const FUNCION_ID = '@Model.FuncionId';
+        const URL_CREAR_RESERVA = '@Url.Action("Crear", "Reserva")';
         let seleccionados = []; // [{ id, etiqueta }]
 
-        // Adjuntar listener solo a asientos libres
         document.querySelectorAll('.asiento-libre').forEach(btn => {
             btn.addEventListener('click', toggleAsiento);
         });
@@ -130,31 +131,28 @@
             const idx = seleccionados.findIndex(a => a.id === id);
 
             if (idx > -1) {
-                // Deseleccionar -> vuelve a verde
                 seleccionados.splice(idx, 1);
                 this.classList.remove('asiento-seleccionado');
                 this.classList.add('asiento-libre');
             } else {
-                // Seleccionar -> azul
                 seleccionados.push({ id, etiqueta });
                 this.classList.remove('asiento-libre');
                 this.classList.add('asiento-seleccionado');
             }
+
             actualizarResumen();
         }
 
         function actualizarResumen() {
             const n = seleccionados.length;
             document.getElementById('txtCantidad').textContent = n;
-            document.getElementById('txtTotal').textContent =
-                'S/ ' + (n * PRECIO).toFixed(2);
-            document.getElementById('txtLista').textContent =
-                n > 0 ? seleccionados.map(a => a.etiqueta).join(', ') : '—';
+            document.getElementById('txtTotal').textContent = 'S/ ' + (n * PRECIO).toFixed(2);
+            document.getElementById('txtLista').textContent = n > 0 ? seleccionados.map(a => a.etiqueta).join(', ') : '—';
             document.getElementById('btnContinuar').disabled = n === 0;
-            document.getElementById('btnLimpiar').disabled  = n === 0;
+            document.getElementById('btnLimpiar').disabled = n === 0;
         }
 
-        document.getElementById('btnLimpiar').addEventListener('click', function () {
+        document.getElementById('btnLimpiar').addEventListener('click', function() {
             seleccionados = [];
             document.querySelectorAll('.asiento-seleccionado').forEach(btn => {
                 btn.classList.remove('asiento-seleccionado');
@@ -163,10 +161,40 @@
             actualizarResumen();
         });
 
-        document.getElementById('btnContinuar').addEventListener('click', function () {
-            // Sprint 3: aquí se enviará la selección al servidor
-            alert('Reserva en desarrollo (Sprint 3).\nAsientos: ' +
-                  seleccionados.map(a => a.etiqueta).join(', '));
+        document.getElementById('btnContinuar').addEventListener('click', async function() {
+            if (seleccionados.length === 0) {
+                return;
+            }
+
+            const btnContinuar = document.getElementById('btnContinuar');
+            const textoOriginal = btnContinuar.textContent;
+            btnContinuar.disabled = true;
+            btnContinuar.textContent = 'Procesando...';
+
+            try {
+                const response = await fetch(URL_CREAR_RESERVA, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        funcionId: FUNCION_ID,
+                        asientoIds: seleccionados.map(a => a.id)
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || 'No se pudo crear la reserva.');
+                }
+
+                window.location.href = data.redirectUrl;
+            } catch (error) {
+                alert(error.message || 'Ocurrió un error al crear la reserva.');
+                btnContinuar.disabled = false;
+                btnContinuar.textContent = textoOriginal;
+            }
         });
     </script>
 }
