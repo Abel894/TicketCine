@@ -6,9 +6,9 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4>Editar Película</h4>
+            <div class="card shadow card-cine">
+                <div class="card-header tc-card-header-dark">
+                    <h4 class="mb-0">Editar Película</h4>
                 </div>
 
                 <div class="card-body">
@@ -18,30 +18,30 @@
                         <input type="hidden" asp-for="Id" />
 
                         <div class="mb-3">
-                            <label asp-for="Titulo" class="form-label">Título *</label>
-                            <input asp-for="Titulo" class="form-control" required>
+                            <label asp-for="Titulo" class="form-label tc-dark-label">Título *</label>
+                            <input asp-for="Titulo" class="form-control tc-dark-input" required>
                             <span asp-validation-for="Titulo" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Sinopsis" class="form-label">Sinopsis *</label>
-                            <textarea asp-for="Sinopsis" class="form-control" rows="4" required></textarea>
+                            <label asp-for="Sinopsis" class="form-label tc-dark-label">Sinopsis *</label>
+                            <textarea asp-for="Sinopsis" class="form-control tc-dark-input" rows="4" required></textarea>
                             <span asp-validation-for="Sinopsis" class="text-danger small"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Genero" class="form-label">Género *</label>
-                                    <input asp-for="Genero" class="form-control" required>
+                                    <label asp-for="Genero" class="form-label tc-dark-label">Género *</label>
+                                    <input asp-for="Genero" class="form-control tc-dark-input" required>
                                     <span asp-validation-for="Genero" class="text-danger small"></span>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="DuracionMinutos" class="form-label">Duración (minutos) *</label>
-                                    <input asp-for="DuracionMinutos" type="number" class="form-control" min="1" required>
+                                    <label asp-for="DuracionMinutos" class="form-label tc-dark-label">Duración (minutos) *</label>
+                                    <input asp-for="DuracionMinutos" type="number" class="form-control tc-dark-input" min="1" required>
                                     <span asp-validation-for="DuracionMinutos" class="text-danger small"></span>
                                 </div>
                             </div>
@@ -50,8 +50,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Clasificacion" class="form-label">Clasificación *</label>
-                                    <select asp-for="Clasificacion" class="form-select" required>
+                                    <label asp-for="Clasificacion" class="form-label tc-dark-label">Clasificación *</label>
+                                    <select asp-for="Clasificacion" class="form-select tc-dark-select" required>
                                         <option value="">-- Selecciona una clasificación --</option>
                                         <option value="G">G (Público General)</option>
                                         <option value="PG">PG (Parental Guidance)</option>
@@ -65,7 +65,7 @@
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Activo" class="form-label">
+                                    <label asp-for="Activo" class="form-label tc-dark-label">
                                         <input asp-for="Activo" type="checkbox" class="form-check-input">
                                         Activa
                                     </label>
@@ -77,7 +77,7 @@
                         @if (!string.IsNullOrEmpty(Model.RutaPosterActual))
                         {
                             <div class="mb-3">
-                                <label class="form-label">Póster Actual</label>
+                                <label class="form-label tc-dark-label">Póster Actual</label>
                                 <div>
                                     <img src="@Model.RutaPosterActual" alt="Póster actual" style="max-height: 200px;">
                                 </div>
@@ -86,19 +86,19 @@
 
                         <!-- Cambiar póster -->
                         <div class="mb-3">
-                            <label asp-for="Poster" class="form-label">Cambiar Póster (Imagen)</label>
-                            <input asp-for="Poster" type="file" class="form-control" accept=".jpg,.jpeg,.png">
-                            <small class="form-text text-muted">Deja en blanco si no deseas cambiar. Formatos: JPG, JPEG, PNG. Máx. 5 MB</small>
+                            <label asp-for="Poster" class="form-label tc-dark-label">Cambiar Póster (Imagen)</label>
+                            <input asp-for="Poster" type="file" class="form-control tc-dark-input" accept=".jpg,.jpeg,.png">
+                            <small class="form-text">Deja en blanco si no deseas cambiar. Formatos: JPG, JPEG, PNG. Máx. 5 MB</small>
                             <span asp-validation-for="Poster" class="text-danger small"></span>
                         </div>
 
                         <input type="hidden" asp-for="RutaPosterActual" />
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-cine">
                                 Actualizar Película
                             </button>
-                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <a href="@Url.Action("Index")" class="btn tc-btn-outline-gold">
                                 Cancelar
                             </a>
                         </div>

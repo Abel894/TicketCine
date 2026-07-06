@@ -7,11 +7,11 @@
 
     <!-- Encabezado -->
     <div class="mb-3">
-        <a href="javascript:history.back();" class="btn btn-outline-secondary btn-sm mb-2">
+        <a href="javascript:history.back();" class="btn tc-btn-outline-gold btn-sm mb-2">
             &larr; Volver a funciones
         </a>
-        <h2 class="mb-1">Seleccionar Asientos</h2>
-        <p class="text-muted mb-0">
+        <h2 class="mb-1 tc-section-title">Seleccionar Asientos</h2>
+        <p class="tc-funcion-info mb-0">
             <strong>@Model.TituloPelicula</strong> &mdash;
             @Model.NombreSala &mdash;
             @Model.FechaHora.ToString("dd/MM/yyyy HH:mm") &mdash;
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Mapa de asientos -->
-    <div class="d-flex justify-content-center mb-4">
+    <div class="d-flex justify-content-center mb-4 tc-seatmap-shell">
         <div id="mapaAsientos">
             @for (int fila = 1; fila <= Model.Filas; fila++)
             {
@@ -57,12 +57,12 @@
                         var asiento = Model.Asientos.FirstOrDefault(a => a.Fila == fila && a.Columna == columna);
                         if (asiento != null)
                         {
-                            var esLibre    = asiento.Estado == "Libre";
+                            var esLibre = asiento.Estado == "Libre";
                             var claseEstado = asiento.Estado switch
                             {
-                                "Libre"     => "asiento-libre",
+                                "Libre" => "asiento-libre",
                                 "Reservado" => "asiento-reservado",
-                                _           => "asiento-vendido"
+                                _ => "asiento-vendido"
                             };
                             var etiqueta = $"{(char)('A' + fila - 1)}{columna}";
 
@@ -83,7 +83,7 @@
     <!-- Panel resumen -->
     <div class="row justify-content-center">
         <div class="col-md-7 col-lg-6">
-            <div class="card shadow-sm">
+            <div class="card card-cine shadow-sm">
                 <div class="card-body py-3">
                     <div class="row text-center g-0">
                         <div class="col-4 border-end">
@@ -100,11 +100,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex justify-content-between align-items-center">
-                    <button type="button" id="btnLimpiar" class="btn btn-outline-secondary btn-sm" disabled>
+                <div class="card-footer tc-card-footer d-flex justify-content-between align-items-center">
+                    <button type="button" id="btnLimpiar" class="btn tc-btn-outline-gold btn-sm" disabled>
                         Limpiar selección
                     </button>
-                    <button type="button" id="btnContinuar" class="btn btn-primary" disabled>
+                    <button type="button" id="btnContinuar" class="btn btn-cine" disabled>
                         Continuar a reserva &rarr;
                     </button>
                 </div>
@@ -205,13 +205,13 @@
         width: min(580px, 95vw);
         text-align: center;
         padding: 8px;
-        background: #e9ecef;
-        border: 2px solid #adb5bd;
+        background: var(--tc-negro);
+        border: 1px solid rgba(212, 175, 55, 0.35);
         border-radius: 6px 6px 0 0;
         font-weight: 700;
         font-size: .78rem;
         letter-spacing: 6px;
-        color: #6c757d;
+        color: var(--tc-dorado);
         margin-bottom: 10px;
     }
 
@@ -234,7 +234,7 @@
         margin-right: 4px;
         font-size: .75rem;
         font-weight: 700;
-        color: #6c757d;
+        color: rgba(245, 240, 230, 0.75);
         user-select: none;
     }
 
@@ -253,10 +253,11 @@
         background: #198754;
         cursor: pointer;
     }
-    .asiento-libre:hover {
-        background: #157347;
-        transform: scale(1.12);
-    }
+
+        .asiento-libre:hover {
+            background: #157347;
+            transform: scale(1.12);
+        }
 
     /* Seleccionado — azul sólido */
     .asiento-seleccionado {
@@ -265,9 +266,10 @@
         transform: scale(1.1);
         box-shadow: 0 0 0 3px rgba(13, 110, 253, .4);
     }
-    .asiento-seleccionado:hover {
-        background: #0b5ed7;
-    }
+
+        .asiento-seleccionado:hover {
+            background: #0b5ed7;
+        }
 
     /* Reservado — gris */
     .asiento-reservado {

@@ -6,7 +6,7 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3 class="mb-0">Historial de reservas</h3>
-        <a asp-controller="Catalogo" asp-action="Index" class="btn btn-outline-primary btn-sm">Ir a cartelera</a>
+        <a asp-controller="Catalogo" asp-action="Index" class="btn btn-cine btn-sm">Ir a cartelera</a>
     </div>
 
     @if (TempData["SuccessMessage"] is string successMessage)
@@ -34,13 +34,13 @@
 
     @if (!Model.Reservas.Any())
     {
-        <div class="alert alert-info">No se encontraron reservas para el filtro seleccionado.</div>
+        <div class="alert tc-empty-state">No se encontraron reservas para el filtro seleccionado.</div>
     }
     else
     {
         <div class="table-responsive">
-            <table class="table table-striped align-middle">
-                <thead class="table-light">
+            <table class="table table-cine align-middle">
+                <thead>
                     <tr>
                         <th>Código</th>
                         <th>Película</th>
@@ -51,55 +51,55 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach (var item in Model.Reservas)
-                {
-                    <tr>
-                        <td><code>@item.CodigoReserva</code></td>
-                        <td>
-                            <div class="fw-semibold">@item.TituloPelicula</div>
-                            <small class="text-muted">@item.NombreSala</small>
-                        </td>
-                        <td>@item.FechaHoraFuncion.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@string.Join(", ", item.Asientos)</td>
-                        <td>
-                            @if (item.Estado == EstadoReserva.Pendiente)
-                            {
-                                <span class="badge bg-warning text-dark">Pendiente</span>
-                            }
-                            else if (item.Estado == EstadoReserva.Confirmada)
-                            {
-                                <span class="badge bg-success">Confirmada</span>
-                            }
-                            else if (item.Estado == EstadoReserva.Cancelada)
-                            {
-                                <span class="badge bg-secondary">Cancelada</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger-subtle text-danger">Expirada</span>
-                            }
-                        </td>
-                        <td class="text-end">
-                            @if (item.Estado == EstadoReserva.Pendiente)
-                            {
-                                <a asp-action="Resumen" asp-route-id="@item.ReservaId" class="btn btn-sm btn-primary me-2 @(item.PuedeContinuarPago ? "" : "disabled")">Continuar pago</a>
-                                <button type="button"
-                                        class="btn btn-sm btn-outline-danger"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#cancelarModal"
-                                        data-reserva-id="@item.ReservaId"
-                                        data-codigo="@item.CodigoReserva"
+                    @foreach (var item in Model.Reservas)
+                    {
+                        <tr>
+                            <td><code>@item.CodigoReserva</code></td>
+                            <td>
+                                <div class="fw-semibold">@item.TituloPelicula</div>
+                                <small class="text-muted">@item.NombreSala</small>
+                            </td>
+                            <td>@item.FechaHoraFuncion.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>@string.Join(", ", item.Asientos)</td>
+                            <td>
+                                @if (item.Estado == EstadoReserva.Pendiente)
+                                {
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                }
+                                else if (item.Estado == EstadoReserva.Confirmada)
+                                {
+                                    <span class="badge bg-success">Confirmada</span>
+                                }
+                                else if (item.Estado == EstadoReserva.Cancelada)
+                                {
+                                    <span class="badge bg-danger">Cancelada</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger">Expirada</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                @if (item.Estado == EstadoReserva.Pendiente)
+                                {
+                                    <a asp-action="Resumen" asp-route-id="@item.ReservaId" class="btn btn-cine btn-sm me-2 @(item.PuedeContinuarPago ? "" : "disabled")">Continuar pago</a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#cancelarModal"
+                                            data-reserva-id="@item.ReservaId"
+                                            data-codigo="@item.CodigoReserva"
                                         @(item.PuedeCancelar ? null : "disabled")>
-                                    Cancelar
-                                </button>
-                            }
-                            else if (item.Estado == EstadoReserva.Confirmada && item.VentaId.HasValue)
-                            {
-                                <a asp-action="Comprobante" asp-route-id="@item.VentaId.Value" class="btn btn-sm btn-outline-success">Ver comprobante</a>
-                            }
-                        </td>
-                    </tr>
-                }
+                                        Cancelar
+                                    </button>
+                                }
+                                else if (item.Estado == EstadoReserva.Confirmada && item.VentaId.HasValue)
+                                {
+                                    <a asp-action="Comprobante" asp-route-id="@item.VentaId.Value" class="btn btn-cine btn-sm">Ver comprobante</a>
+                                }
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -131,7 +131,7 @@
 @section Scripts {
     <script>
         const filtroEstado = document.getElementById('filtroEstado');
-        filtroEstado.addEventListener('change', function () {
+        filtroEstado.addEventListener('change', function() {
             const estado = this.value;
             const url = estado
                 ? `@Url.Action("Historial", "Reserva")?filtroEstado=${encodeURIComponent(estado)}`
@@ -141,7 +141,7 @@
         });
 
         const cancelarModal = document.getElementById('cancelarModal');
-        cancelarModal.addEventListener('show.bs.modal', function (event) {
+        cancelarModal.addEventListener('show.bs.modal', function(event) {
             const button = event.relatedTarget;
             const reservaId = button.getAttribute('data-reserva-id');
             const codigo = button.getAttribute('data-codigo');

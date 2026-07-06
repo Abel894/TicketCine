@@ -6,9 +6,9 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4>Editar Sala</h4>
+            <div class="card shadow card-cine">
+                <div class="card-header tc-card-header-dark">
+                    <h4 class="mb-0">Editar Sala</h4>
                 </div>
 
                 <div class="card-body">
@@ -18,45 +18,45 @@
                         <input type="hidden" asp-for="Id" />
 
                         <div class="mb-3">
-                            <label asp-for="Nombre" class="form-label">Nombre de la Sala *</label>
-                            <input asp-for="Nombre" class="form-control" required>
+                            <label asp-for="Nombre" class="form-label tc-dark-label">Nombre de la Sala *</label>
+                            <input asp-for="Nombre" class="form-control tc-dark-input" required>
                             <span asp-validation-for="Nombre" class="text-danger small"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Filas" class="form-label">Filas *</label>
-                                    <input asp-for="Filas" type="number" class="form-control" min="1" required>
+                                    <label asp-for="Filas" class="form-label tc-dark-label">Filas *</label>
+                                    <input asp-for="Filas" type="number" class="form-control tc-dark-input" min="1" required>
                                     <span asp-validation-for="Filas" class="text-danger small"></span>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Columnas" class="form-label">Columnas *</label>
-                                    <input asp-for="Columnas" type="number" class="form-control" min="1" required>
+                                    <label asp-for="Columnas" class="form-label tc-dark-label">Columnas *</label>
+                                    <input asp-for="Columnas" type="number" class="form-control tc-dark-input" min="1" required>
                                     <span asp-validation-for="Columnas" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="totalAsientos" class="alert alert-info">
+                        <div id="totalAsientos" class="alert tc-info-box">
                             Total de asientos: <strong>@(Model.Filas * Model.Columnas)</strong>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Activo" class="form-label">
+                            <label asp-for="Activo" class="form-label tc-dark-label">
                                 <input asp-for="Activo" type="checkbox" class="form-check-input">
                                 Activa
                             </label>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-cine">
                                 Actualizar Sala
                             </button>
-                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <a href="@Url.Action("Index")" class="btn tc-btn-outline-gold">
                                 Cancelar
                             </a>
                         </div>

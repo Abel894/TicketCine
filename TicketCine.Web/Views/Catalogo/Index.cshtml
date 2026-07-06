@@ -18,7 +18,7 @@
             @foreach (var pelicula in Model)
             {
                 <div class="col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card card-cine h-100 shadow-sm">
                         <!-- Poster -->
                         <img src="@(string.IsNullOrEmpty(pelicula.RutaPoster) ? Url.Content("~/images/poster-generico.svg") : pelicula.RutaPoster)"
                              class="card-img-top"
@@ -27,7 +27,7 @@
 
                         <div class="card-body">
                             <h5 class="card-title">@pelicula.Titulo</h5>
-                            <p class="card-text text-muted">@pelicula.Genero</p>
+                            <p class="card-text">@pelicula.Genero</p>
                             <p class="card-text small">@pelicula.Sinopsis</p>
                             <p class="card-text">
                                 <strong>Duración:</strong> @pelicula.DuracionMinutos min <br>
@@ -35,8 +35,8 @@
                             </p>
                         </div>
 
-                        <div class="card-footer bg-white border-top">
-                            <a href="@Url.Action("Funciones", new { peliculaId = pelicula.Id })" class="btn btn-primary btn-sm w-100">
+                        <div class="card-footer border-top tc-card-footer">
+                            <a href="@Url.Action("Funciones", new { peliculaId = pelicula.Id })" class="btn btn-cine btn-sm w-100">
                                 Ver Funciones
                             </a>
                         </div>

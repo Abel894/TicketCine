@@ -1,8 +1,26 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="tc-hero-banner rounded-4 p-4 p-md-5 mt-3">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+            <span class="tc-hero-kicker">Temporada Especial</span>
+            <h1 class="display-5 fw-bold mt-3 mb-3">Vive el cine clásico en pantalla grande</h1>
+            <p class="lead mb-4 tc-hero-text">
+                Revive obras maestras en un ambiente elegante y nostálgico. Funciones seleccionadas con estética roja,
+                dorada y negra para una experiencia cinematográfica inolvidable.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-cine btn-lg" asp-controller="Catalogo" asp-action="Index">Ver cartelera</a>
+                <a class="btn tc-btn-outline-gold btn-lg" asp-controller="Auth" asp-action="Registro">Crear cuenta</a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="tc-hero-panel rounded-3 p-4 h-100">
+                <h2 class="h4 mb-3">Noches de estreno</h2>
+                <p class="mb-0 tc-hero-text">Asientos preferenciales, sonido envolvente y la magia del séptimo arte en cada función.</p>
+            </div>
+        </div>
+    </div>
+</section>

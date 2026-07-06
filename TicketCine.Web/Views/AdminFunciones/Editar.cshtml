@@ -8,9 +8,9 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4>Editar Función</h4>
+            <div class="card shadow card-cine">
+                <div class="card-header tc-card-header-dark">
+                    <h4 class="mb-0">Editar Función</h4>
                 </div>
 
                 <div class="card-body">
@@ -22,8 +22,8 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="PeliculaId" class="form-label">Película *</label>
-                                    <select asp-for="PeliculaId" class="form-select" required id="peliculaSelect">
+                                    <label asp-for="PeliculaId" class="form-label tc-dark-label">Película *</label>
+                                    <select asp-for="PeliculaId" class="form-select tc-dark-select" required id="peliculaSelect">
                                         <option value="">-- Selecciona una película --</option>
                                         @foreach (var pelicula in peliculas)
                                         {
@@ -39,8 +39,8 @@
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="SalaId" class="form-label">Sala *</label>
-                                    <select asp-for="SalaId" class="form-select" required>
+                                    <label asp-for="SalaId" class="form-label tc-dark-label">Sala *</label>
+                                    <select asp-for="SalaId" class="form-select tc-dark-select" required>
                                         <option value="">-- Selecciona una sala --</option>
                                         @foreach (var sala in salas)
                                         {
@@ -57,33 +57,33 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="FechaHora" class="form-label">Fecha y Hora *</label>
-                                    <input asp-for="FechaHora" type="datetime-local" class="form-control" required>
+                                    <label asp-for="FechaHora" class="form-label tc-dark-label">Fecha y Hora *</label>
+                                    <input asp-for="FechaHora" type="datetime-local" class="form-control tc-dark-input" required>
                                     <span asp-validation-for="FechaHora" class="text-danger small"></span>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="Precio" class="form-label">Precio ($) *</label>
-                                    <input asp-for="Precio" type="number" step="0.01" min="0" class="form-control" required>
+                                    <label asp-for="Precio" class="form-label tc-dark-label">Precio ($) *</label>
+                                    <input asp-for="Precio" type="number" step="0.01" min="0" class="form-control tc-dark-input" required>
                                     <span asp-validation-for="Precio" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Activo" class="form-label">
+                            <label asp-for="Activo" class="form-label tc-dark-label">
                                 <input asp-for="Activo" type="checkbox" class="form-check-input">
                                 Activa
                             </label>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-cine">
                                 Actualizar Función
                             </button>
-                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <a href="@Url.Action("Index")" class="btn tc-btn-outline-gold">
                                 Cancelar
                             </a>
                         </div>
