@@ -38,6 +38,15 @@ namespace TicketCine.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Reserva>> ObtenerTodasPorUsuarioAsync(Guid usuarioId)
+        {
+            return await _context.Reservas
+                .Include(r => r.Asientos)
+                .Where(r => r.UsuarioId == usuarioId)
+                .OrderByDescending(r => r.FechaCreacion)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Reserva>> ObtenerExpiradasPorUsuarioAsync(Guid usuarioId)
         {
             return await _context.Reservas

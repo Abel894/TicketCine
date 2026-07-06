@@ -1,0 +1,157 @@
+@model TicketCine.Web.Models.AdminUsuariosIndexViewModel
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Gestión de Usuarios</h3>
+    </div>
+
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @successMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @errorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (!Model.Usuarios.Any())
+    {
+        <div class="alert alert-info">No hay usuarios registrados.</div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var usuario in Model.Usuarios)
+                {
+                    var esUsuarioAutenticado = usuario.Id == Model.UsuarioAutenticadoId;
+                    var esAdministrador = usuario.Rol == "Administrador";
+                    var accionLabel = usuario.Activo ? "Desactivar" : "Activar";
+                    var claseBoton = usuario.Activo ? "btn-outline-danger" : "btn-outline-success";
+
+                    <tr>
+                        <td>@usuario.Nombre</td>
+                        <td>@usuario.Correo</td>
+                        <td>
+                            @if (esAdministrador)
+                            {
+                                <span class="badge bg-primary">Administrador</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Cliente</span>
+                            }
+                        </td>
+                        <td>
+                            @if (usuario.Activo)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactivo</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            @if (esUsuarioAutenticado)
+                            {
+                                <button type="button"
+                                        class="btn btn-sm @claseBoton"
+                                        disabled
+                                        data-bs-toggle="tooltip"
+                                        data-bs-title="No puedes cambiar el estado de tu propia cuenta.">
+                                    @accionLabel
+                                </button>
+                            }
+                            else if (esAdministrador)
+                            {
+                                <button type="button"
+                                        class="btn btn-sm @claseBoton"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#cambiarEstadoModal"
+                                        data-usuario-id="@usuario.Id"
+                                        data-usuario-nombre="@usuario.Nombre"
+                                        data-accion-label="@accionLabel">
+                                    @accionLabel
+                                </button>
+                            }
+                            else
+                            {
+                                <form method="post" asp-action="CambiarEstado" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="usuarioId" value="@usuario.Id" />
+                                    <button type="submit" class="btn btn-sm @claseBoton">
+                                        @accionLabel
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar cambio de estado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Seguro que deseas <strong id="accionEstadoUsuario">-</strong> al administrador
+                <strong id="nombreUsuarioEstado">-</strong>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, volver</button>
+                <form method="post" asp-action="CambiarEstado">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="usuarioIdEstado" name="usuarioId" />
+                    <button type="submit" class="btn btn-primary">Sí, confirmar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const cambiarEstadoModal = document.getElementById('cambiarEstadoModal');
+        cambiarEstadoModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const usuarioId = button.getAttribute('data-usuario-id');
+            const usuarioNombre = button.getAttribute('data-usuario-nombre');
+            const accionLabel = button.getAttribute('data-accion-label');
+
+            document.getElementById('usuarioIdEstado').value = usuarioId;
+            document.getElementById('nombreUsuarioEstado').textContent = usuarioNombre;
+            document.getElementById('accionEstadoUsuario').textContent = accionLabel.toLowerCase();
+        });
+
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        [...tooltipTriggerList].forEach(el => new bootstrap.Tooltip(el));
+    </script>
+}

@@ -36,6 +36,12 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" asp-controller="Reserva" asp-action="MisReservas">Mis reservas</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Reserva" asp-action="Historial">Historial</a></li>
+                                    @if (User.IsInRole("Administrador"))
+                                    {
+                                        <li><a class="dropdown-item" asp-controller="AdminUsuarios" asp-action="Index">Gestión de Usuarios</a></li>
+                                        <li><a class="dropdown-item" asp-controller="AdminReportes" asp-action="Index">Reportes</a></li>
+                                    }
                                     <li><a class="dropdown-item" href="#">Mi Perfil</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Cerrar Sesión</a></li>

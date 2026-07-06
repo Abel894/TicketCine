@@ -15,6 +15,7 @@ namespace TicketCine.Web.Controllers
         private readonly IVentaService _ventaService;
         private readonly IFuncionRepository _funcionRepository;
         private readonly IAsientoRepository _asientoRepository;
+        private readonly IReservaRepository _reservaRepository;
         private readonly IVentaRepository _ventaRepository;
         private readonly ILogger<ReservaController> _logger;
 
@@ -23,6 +24,7 @@ namespace TicketCine.Web.Controllers
             IVentaService ventaService,
             IFuncionRepository funcionRepository,
             IAsientoRepository asientoRepository,
+            IReservaRepository reservaRepository,
             IVentaRepository ventaRepository,
             ILogger<ReservaController> logger)
         {
@@ -30,6 +32,7 @@ namespace TicketCine.Web.Controllers
             _ventaService = ventaService ?? throw new ArgumentNullException(nameof(ventaService));
             _funcionRepository = funcionRepository ?? throw new ArgumentNullException(nameof(funcionRepository));
             _asientoRepository = asientoRepository ?? throw new ArgumentNullException(nameof(asientoRepository));
+            _reservaRepository = reservaRepository ?? throw new ArgumentNullException(nameof(reservaRepository));
             _ventaRepository = ventaRepository ?? throw new ArgumentNullException(nameof(ventaRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -262,6 +265,80 @@ namespace TicketCine.Web.Controllers
             var model = new MisReservasViewModel
             {
                 Reservas = items
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Historial(string? filtroEstado)
+        {
+            var usuarioId = ObtenerUsuarioId();
+            if (usuarioId == Guid.Empty)
+            {
+                return Unauthorized();
+            }
+
+            await _reservaService.ExpirarReservasVencidasAsync();
+            var reservas = await _reservaRepository.ObtenerTodasPorUsuarioAsync(usuarioId);
+
+            EstadoReserva? estadoFiltro = null;
+            if (!string.IsNullOrWhiteSpace(filtroEstado)
+                && Enum.TryParse<EstadoReserva>(filtroEstado, true, out var estadoFiltrado))
+            {
+                estadoFiltro = estadoFiltrado;
+                reservas = reservas.Where(r => r.Estado == estadoFiltrado).ToList();
+            }
+
+            var items = new List<ReservaItemViewModel>();
+
+            foreach (var reserva in reservas)
+            {
+                var funcion = await _funcionRepository.ObtenerPorIdAsync(reserva.FuncionId);
+                if (funcion == null)
+                    continue;
+
+                var asientosEtiquetas = new List<string>();
+                foreach (var asientoReserva in reserva.Asientos)
+                {
+                    var asiento = await _asientoRepository.ObtenerPorIdAsync(asientoReserva.AsientoId);
+                    if (asiento != null)
+                    {
+                        asientosEtiquetas.Add($"{(char)('A' + asiento.Fila - 1)}{asiento.Columna}");
+                    }
+                }
+
+                Guid? ventaId = null;
+                if (reserva.Estado == EstadoReserva.Confirmada)
+                {
+                    var venta = await _ventaRepository.ObtenerPorReservaIdAsync(reserva.Id);
+                    ventaId = venta?.Id;
+                }
+
+                var puedeContinuarPago = reserva.Estado == EstadoReserva.Pendiente
+                                         && reserva.FechaExpiracion > DateTime.Now;
+                var puedeCancelar = reserva.Estado == EstadoReserva.Pendiente
+                                    && funcion.FechaHora > DateTime.Now.AddHours(1);
+
+                items.Add(new ReservaItemViewModel
+                {
+                    ReservaId = reserva.Id,
+                    CodigoReserva = reserva.Id.ToString("N").ToUpperInvariant(),
+                    TituloPelicula = funcion.Pelicula.Titulo,
+                    NombreSala = funcion.Sala.Nombre,
+                    FechaHoraFuncion = funcion.FechaHora,
+                    Asientos = asientosEtiquetas.OrderBy(x => x).ToList(),
+                    Estado = reserva.Estado,
+                    PuedeContinuarPago = puedeContinuarPago,
+                    PuedeCancelar = puedeCancelar,
+                    VentaId = ventaId
+                });
+            }
+
+            var model = new MisReservasViewModel
+            {
+                Reservas = items,
+                FiltroEstado = estadoFiltro?.ToString()
             };
 
             return View(model);

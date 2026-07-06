@@ -1,0 +1,98 @@
+@model TicketCine.Web.Models.AdminReportesViewModel
+@{
+    ViewData["Title"] = "Reportes de Ventas";
+}
+
+<div class="container mt-4">
+    <h3 class="mb-3">Reportes de Ventas</h3>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+    }
+
+    <form method="post" asp-action="Index" class="card card-body mb-4">
+        @Html.AntiForgeryToken()
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label asp-for="Filtros.FechaInicio" class="form-label">Fecha inicio</label>
+                <input asp-for="Filtros.FechaInicio" type="date" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Filtros.FechaFin" class="form-label">Fecha fin</label>
+                <input asp-for="Filtros.FechaFin" type="date" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Filtros.PeliculaId" class="form-label">Película</label>
+                <select asp-for="Filtros.PeliculaId" class="form-select">
+                    <option value="">Todas</option>
+                    @foreach (var pelicula in Model.Peliculas)
+                    {
+                        <option value="@pelicula.Id">@pelicula.Titulo</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Generar reporte</button>
+            </div>
+        </div>
+    </form>
+
+    @if (Model.ReporteGenerado && Model.Resultado != null)
+    {
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="card border-primary h-100">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted">Total de Entradas</h6>
+                        <div class="display-6 fw-bold">@Model.Resultado.TotalEntradas</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-success h-100">
+                    <div class="card-body text-center">
+                        <h6 class="text-muted">Ingreso Total</h6>
+                        <div class="display-6 fw-bold text-success">S/ @Model.Resultado.IngresoTotal.ToString("N2")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                Desglose por película
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.Resultado.DetallePorPelicula.Any())
+                {
+                    <div class="p-3 alert alert-info mb-0">No hay ventas para los filtros seleccionados.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Película</th>
+                                    <th class="text-end">Entradas vendidas</th>
+                                    <th class="text-end">Ingreso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.Resultado.DetallePorPelicula)
+                            {
+                                <tr>
+                                    <td>@item.Titulo</td>
+                                    <td class="text-end">@item.EntradasVendidas</td>
+                                    <td class="text-end">S/ @item.Ingreso.ToString("N2")</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

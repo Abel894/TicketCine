@@ -5,6 +5,7 @@ namespace TicketCine.Web.Models
     public class MisReservasViewModel
     {
         public List<ReservaItemViewModel> Reservas { get; set; } = new();
+        public string? FiltroEstado { get; set; }
     }
 
     public class ReservaItemViewModel

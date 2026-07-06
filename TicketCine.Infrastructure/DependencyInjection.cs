@@ -34,6 +34,7 @@ namespace TicketCine.Infrastructure
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IReservaService, ReservaService>();
             services.AddScoped<IVentaService, VentaService>();
+            services.AddScoped<IReporteVentasService, ReporteVentasService>();
             services.AddScoped<IArchivoService, ArchivoService>();
 
             return services;

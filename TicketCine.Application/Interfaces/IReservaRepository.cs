@@ -7,6 +7,7 @@ namespace TicketCine.Application.Interfaces
         Task<Reserva> CrearAsync(Reserva reserva);
         Task<Reserva?> ObtenerPorIdAsync(Guid id);
         Task<IEnumerable<Reserva>> ObtenerActivasPorUsuarioAsync(Guid usuarioId);
+        Task<IEnumerable<Reserva>> ObtenerTodasPorUsuarioAsync(Guid usuarioId);
         Task<IEnumerable<Reserva>> ObtenerExpiradasPorUsuarioAsync(Guid usuarioId);
         Task<IEnumerable<Reserva>> ObtenerPendientesVencidasAsync(DateTime fechaActual);
         Task<int> ContarAsientosReservadosPorFuncionYUsuarioAsync(Guid funcionId, Guid usuarioId);

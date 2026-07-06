@@ -48,5 +48,37 @@ namespace TicketCine.Infrastructure.Repositories
                         .ThenInclude(ar => ar.Asiento)
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
+
+        public async Task<IEnumerable<Venta>> ObtenerParaReporteAsync(DateTime? fechaInicio, DateTime? fechaFin, Guid? peliculaId)
+        {
+            var query = _context.Ventas
+                .AsNoTracking()
+                .Include(v => v.Reserva)
+                    .ThenInclude(r => r.Funcion)
+                        .ThenInclude(f => f.Pelicula)
+                .Include(v => v.Reserva)
+                    .ThenInclude(r => r.Asientos)
+                .AsQueryable();
+
+            if (fechaInicio.HasValue)
+            {
+                query = query.Where(v => v.FechaVenta >= fechaInicio.Value.Date);
+            }
+
+            if (fechaFin.HasValue)
+            {
+                var fechaFinIncluyente = fechaFin.Value.Date.AddDays(1);
+                query = query.Where(v => v.FechaVenta < fechaFinIncluyente);
+            }
+
+            if (peliculaId.HasValue && peliculaId.Value != Guid.Empty)
+            {
+                query = query.Where(v => v.Reserva.Funcion.PeliculaId == peliculaId.Value);
+            }
+
+            return await query
+                .OrderByDescending(v => v.FechaVenta)
+                .ToListAsync();
+        }
     }
 }

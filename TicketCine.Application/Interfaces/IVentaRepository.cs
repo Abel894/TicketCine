@@ -8,5 +8,6 @@ namespace TicketCine.Application.Interfaces
         Task<Venta?> ObtenerPorIdAsync(Guid id);
         Task<Venta?> ObtenerPorReservaIdAsync(Guid reservaId);
         Task<Venta?> ObtenerConDetalleAsync(Guid id);
+        Task<IEnumerable<Venta>> ObtenerParaReporteAsync(DateTime? fechaInicio, DateTime? fechaFin, Guid? peliculaId);
     }
 }

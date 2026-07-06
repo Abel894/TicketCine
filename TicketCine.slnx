@@ -3,6 +3,7 @@
     <File Path="../../../Downloads/01-Especificacion-Sprint1-Identidad.md" />
     <File Path="../../../Downloads/02-Especificacion-Sprint2-Cartelera-Asientos.md" />
     <File Path="../../../Downloads/03-Especificacion-Sprint3-Reserva-Compra.md" />
+    <File Path="../../../Downloads/04-Especificacion-Sprint4-Administracion-Historial-Reportes.md" />
   </Folder>
   <Project Path="TicketCine.Application/TicketCine.Application.csproj" />
   <Project Path="TicketCine.Domain/TicketCine.Domain.csproj" />
