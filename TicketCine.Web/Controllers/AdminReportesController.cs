@@ -38,18 +38,19 @@ namespace TicketCine.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ReporteVentasRequest request)
+        public async Task<IActionResult> Index(AdminReportesViewModel model)
         {
-            var model = new AdminReportesViewModel
+            if (model == null)
             {
-                Filtros = request ?? new ReporteVentasRequest(),
-                Peliculas = await ObtenerPeliculasParaFiltroAsync(),
-                ReporteGenerado = true
-            };
+                model = new AdminReportesViewModel();
+            }
 
-            if (request?.FechaInicio.HasValue == true
-                && request.FechaFin.HasValue
-                && request.FechaInicio.Value.Date > request.FechaFin.Value.Date)
+            model.Peliculas = await ObtenerPeliculasParaFiltroAsync();
+            model.ReporteGenerado = true;
+
+            if (model.Filtros?.FechaInicio.HasValue == true
+                && model.Filtros.FechaFin.HasValue
+                && model.Filtros.FechaInicio.Value.Date > model.Filtros.FechaFin.Value.Date)
             {
                 ModelState.AddModelError(string.Empty, "La fecha de inicio no puede ser mayor que la fecha fin.");
                 return View(model);
