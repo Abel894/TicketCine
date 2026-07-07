@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Elementos de la solución/">
+    <File Path="Dockerfile" />
+  </Folder>
   <Folder Name="/specs/">
     <File Path="../../../Downloads/01-Especificacion-Sprint1-Identidad.md" />
     <File Path="../../../Downloads/02-Especificacion-Sprint2-Cartelera-Asientos.md" />
