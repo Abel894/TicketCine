@@ -39,8 +39,12 @@
                                     <li><a class="dropdown-item tc-dropdown-item" asp-controller="Reserva" asp-action="Historial">Historial</a></li>
                                     @if (User.IsInRole("Administrador"))
                                     {
+                                        <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item tc-dropdown-item" asp-controller="AdminUsuarios" asp-action="Index">Gestión de Usuarios</a></li>
                                         <li><a class="dropdown-item tc-dropdown-item" asp-controller="AdminReportes" asp-action="Index">Reportes</a></li>
+                                        <li><a class="dropdown-item tc-dropdown-item" asp-controller="AdminPeliculas" asp-action="Index">Películas</a></li>
+                                        <li><a class="dropdown-item tc-dropdown-item" asp-controller="AdminSalas" asp-action="Index">Salas</a></li>
+                                        <li><a class="dropdown-item tc-dropdown-item" asp-controller="AdminFunciones" asp-action="Index">Funciones</a></li>
                                     }
                                     <li><a class="dropdown-item tc-dropdown-item" href="#">Mi Perfil</a></li>
                                     <li><hr class="dropdown-divider"></li>
