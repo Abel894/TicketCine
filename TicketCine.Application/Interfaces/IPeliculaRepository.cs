@@ -8,6 +8,7 @@ namespace TicketCine.Application.Interfaces
         Task<IEnumerable<Pelicula>> ObtenerTodosAsync();
         Task<IEnumerable<Pelicula>> ObtenerActivosAsync();
         Task<IEnumerable<Pelicula>> ObtenerConFuncionesActivasAsync();
+        Task<IEnumerable<Pelicula>> ObtenerDestacadasConFuncionesProximasAsync(int cantidadMaxima);
         Task<Pelicula> CrearAsync(Pelicula pelicula);
         Task ActualizarAsync(Pelicula pelicula);
         Task EliminarAsync(Guid id);

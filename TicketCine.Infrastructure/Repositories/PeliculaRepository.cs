@@ -41,6 +41,26 @@ namespace TicketCine.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Pelicula>> ObtenerDestacadasConFuncionesProximasAsync(int cantidadMaxima)
+        {
+            var fechaActual = DateTime.Now;
+
+            return await _context.Peliculas
+                .Where(p => p.Activo)
+                .Where(p => p.Funciones.Any(f => f.Activo && f.FechaHora >= fechaActual))
+                .Select(p => new
+                {
+                    Pelicula = p,
+                    ProximaFuncion = p.Funciones
+                        .Where(f => f.Activo && f.FechaHora >= fechaActual)
+                        .Min(f => f.FechaHora)
+                })
+                .OrderBy(x => x.ProximaFuncion)
+                .Take(cantidadMaxima)
+                .Select(x => x.Pelicula)
+                .ToListAsync();
+        }
+
         public async Task<Pelicula> CrearAsync(Pelicula pelicula)
         {
             _context.Peliculas.Add(pelicula);

@@ -1,25 +1,63 @@
-﻿@{
+﻿@model List<PeliculaDestacadaViewModel>
+@{
     ViewData["Title"] = "Inicio";
+    var featuredCount = Model?.Count ?? 0;
 }
 
 <section class="tc-hero-banner rounded-4 p-4 p-md-5 mt-3">
-    <div class="row align-items-center g-4">
-        <div class="col-lg-8">
-            <span class="tc-hero-kicker">Temporada Especial</span>
-            <h1 class="display-5 fw-bold mt-3 mb-3">Vive el cine clásico en pantalla grande</h1>
-            <p class="lead mb-4 tc-hero-text">
-                Revive obras maestras en un ambiente elegante y nostálgico. Funciones seleccionadas con estética roja,
-                dorada y negra para una experiencia cinematográfica inolvidable.
-            </p>
-            <div class="d-flex flex-wrap gap-2">
-                <a class="btn btn-cine btn-lg" asp-controller="Catalogo" asp-action="Index">Ver cartelera</a>
-                <a class="btn tc-btn-outline-gold btn-lg" asp-controller="Auth" asp-action="Registro">Crear cuenta</a>
+    <div class="row align-items-stretch g-4">
+        <div class="col-lg-6 tc-hero-content">
+            <div>
+                <div class="tc-hero-location small mb-3">
+                    <i class="bi bi-geo-alt-fill me-1"></i>Cines Ayacucho · Temporada @DateTime.Now.Year
+                </div>
+                <span class="tc-hero-kicker">Temporada especial</span>
+                <h1 class="display-5 fw-bold mt-3 mb-3">Vive el cine clásico en pantalla grande</h1>
+                <p class="lead mb-4 tc-hero-text">
+                    Revive obras maestras en un ambiente elegante y nostálgico. Funciones seleccionadas con estética roja,
+                    dorada y negra para una experiencia cinematográfica inolvidable.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-cine btn-lg" asp-controller="Catalogo" asp-action="Index">Ver cartelera</a>
+                    <a class="btn tc-btn-outline-gold btn-lg" asp-controller="Auth" asp-action="Registro">Crear cuenta</a>
+                </div>
             </div>
+
+            @if (featuredCount > 0)
+            {
+                <div class="tc-hero-cartelera-count mt-4 pt-3">
+                    @featuredCount películas en cartelera
+                </div>
+            }
         </div>
-        <div class="col-lg-4">
-            <div class="tc-hero-panel rounded-3 p-4 h-100">
-                <h2 class="h4 mb-3">Noches de estreno</h2>
-                <p class="mb-0 tc-hero-text">Asientos preferenciales, sonido envolvente y la magia del séptimo arte en cada función.</p>
+        <div class="col-lg-6">
+            <div class="tc-hero-poster-grid">
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var pelicula in Model)
+                    {
+                        <a asp-controller="Catalogo"
+                           asp-action="Funciones"
+                           asp-route-peliculaId="@pelicula.Id"
+                           class="tc-hero-poster-link"
+                           title="Ver funciones de @pelicula.Titulo">
+                            <img src="@(string.IsNullOrEmpty(pelicula.RutaPoster) ? Url.Content("~/images/poster-generico.svg") : pelicula.RutaPoster)"
+                                 alt="@pelicula.Titulo"
+                                 class="tc-hero-poster" />
+                        </a>
+                    }
+                }
+                else
+                {
+                    @for (var i = 0; i < 6; i++)
+                    {
+                        <div class="tc-hero-poster-link tc-hero-poster-link-placeholder">
+                            <img src="@Url.Content("~/images/poster-generico.svg")"
+                                 alt="Póster no disponible"
+                                 class="tc-hero-poster" />
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>

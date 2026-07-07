@@ -1,14 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using TicketCine.Application.Interfaces;
 using TicketCine.Web.Models;
 
 namespace TicketCine.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IPeliculaRepository _peliculaRepository;
+
+        public HomeController(IPeliculaRepository peliculaRepository)
         {
-            return View();
+            _peliculaRepository = peliculaRepository ?? throw new ArgumentNullException(nameof(peliculaRepository));
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var peliculasDestacadas = await _peliculaRepository.ObtenerDestacadasConFuncionesProximasAsync(6);
+
+            var model = peliculasDestacadas
+                .Select(p => new PeliculaDestacadaViewModel
+                {
+                    Id = p.Id,
+                    Titulo = p.Titulo,
+                    RutaPoster = p.RutaPoster
+                })
+                .ToList();
+
+            return View(model);
         }
 
         public IActionResult Privacy()
