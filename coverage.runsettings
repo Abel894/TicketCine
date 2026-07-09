@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Exclude>[*]TicketCine.Infrastructure.Migrations.*,[*]TicketCine.Application.DTOs.*</Exclude>
+          <ExcludeByFile>**/Migrations/**/*.cs,**/DTOs/**/*.cs</ExcludeByFile>
+          <ExcludeByAttribute>ExcludeFromCodeCoverage</ExcludeByAttribute>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

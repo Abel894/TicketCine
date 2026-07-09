@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Elementos de la solución/">
+    <File Path="coverage.runsettings" />
     <File Path="Dockerfile" />
   </Folder>
   <Folder Name="/specs/">
