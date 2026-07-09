@@ -11,6 +11,7 @@
   <Project Path="TicketCine.Application/TicketCine.Application.csproj" />
   <Project Path="TicketCine.Domain/TicketCine.Domain.csproj" />
   <Project Path="TicketCine.Infrastructure/TicketCine.Infrastructure.csproj" />
+  <Project Path="TicketCine.IntegrationTests/TicketCine.IntegrationTests.csproj" Id="90f845a0-92ff-407f-a0c0-d4def25c3a17" />
   <Project Path="TicketCine.Tests/TicketCine.Tests.csproj" />
   <Project Path="TicketCine.Web/TicketCine.Web.csproj" />
 </Solution>

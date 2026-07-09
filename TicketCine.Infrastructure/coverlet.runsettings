@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0" assemblyQualifiedName="Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+				<Configuration>
+					<CodeCoverage>
+						<ModulePaths>
+							<Includes>
+								<ModulePath>.*ticketcine\.domain\.dll$</ModulePath>
+								<ModulePath>.*ticketcine\.application\.dll$</ModulePath>
+								<ModulePath>.*ticketcine\.infrastructure\.dll$</ModulePath>
+							</Includes>
+							<Excludes>
+								<ModulePath>.*\.Tests\.dll$</ModulePath>
+								<ModulePath>.*\.IntegrationTests\.dll$</ModulePath>
+								<ModulePath>.*testcontainers.*</ModulePath>
+								<ModulePath>.*docker\.dotnet.*</ModulePath>
+								<ModulePath>.*npgsql.*</ModulePath>
+								<ModulePath>.*microsoft\..*</ModulePath>
+								<ModulePath>.*system\..*</ModulePath>
+							</Excludes>
+						</ModulePaths>
+						<Functions>
+							<Excludes>
+								<Function>.*Migrations.*</Function>
+								<Function>.*DependencyInjection.*</Function>
+								<Function>.*\.Program\..*</Function>
+							</Excludes>
+						</Functions>
+						<Attributes>
+							<Excludes>
+								<Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+							</Excludes>
+						</Attributes>
+					</CodeCoverage>
+				</Configuration>
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
+</RunSettings>

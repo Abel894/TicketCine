@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics.CodeAnalysis;
 using TicketCine.Application.Interfaces;
 using TicketCine.Application.Services;
 using TicketCine.Infrastructure.Data;
@@ -9,6 +10,7 @@ using TicketCine.Infrastructure.Services;
 
 namespace TicketCine.Infrastructure
 {
+    [ExcludeFromCodeCoverage]
     public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
