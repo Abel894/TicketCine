@@ -31,6 +31,11 @@ namespace TicketCine.Application.Services
             if (string.IsNullOrWhiteSpace(request.Contrasena))
                 throw new ArgumentException("La contraseña es requerida.", nameof(request.Contrasena));
 
+            // Validar dominio de correo (solo @gmail.com)
+            var correoNormalizado = request.Correo.Trim().ToLowerInvariant();
+            if (!correoNormalizado.EndsWith("@gmail.com"))
+                throw new ArgumentException("Solo se aceptan correos de Gmail (@gmail.com).", nameof(request.Correo));
+
             // Validar unicidad del correo
             if (await _usuarioRepository.CorreoExisteAsync(request.Correo))
                 throw new InvalidOperationException($"El correo '{request.Correo}' ya está registrado.");

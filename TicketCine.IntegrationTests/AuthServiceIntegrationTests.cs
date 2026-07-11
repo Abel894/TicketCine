@@ -36,7 +36,7 @@ public class AuthServiceIntegrationTests
         var authService = new AuthService(usuarioRepo);
 
         // Arrange: registrar un usuario real (esto genera el hash real con BCrypt y lo persiste)
-        var correo = $"test_{Guid.NewGuid()}@test.com";
+        var correo = $"test_{Guid.NewGuid()}@gmail.com";
         var registroRequest = new RegistroUsuarioRequest
         {
             Nombre = "Usuario Test",
@@ -69,7 +69,7 @@ public class AuthServiceIntegrationTests
         var usuarioRepo = new UsuarioRepository(context);
         var authService = new AuthService(usuarioRepo);
 
-        var correo = $"test_{Guid.NewGuid()}@test.com";
+        var correo = $"test_{Guid.NewGuid()}@gmail.com";
         var registroRequest = new RegistroUsuarioRequest
         {
             Nombre = "Usuario Test",

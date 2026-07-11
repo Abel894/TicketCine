@@ -15,7 +15,7 @@ public class AuthServiceTests
         var request = new RegistroUsuarioRequest
         {
             Nombre = "  Abel  ",
-            Correo = "  ABEL@MAIL.COM  ",
+            Correo = "  ABEL@GMAIL.COM  ",
             Contrasena = "Password123!"
         };
 
@@ -28,13 +28,13 @@ public class AuthServiceTests
 
         Assert.NotEqual(Guid.Empty, response.Id);
         Assert.Equal("Abel", response.Nombre);
-        Assert.Equal("abel@mail.com", response.Correo);
+        Assert.Equal("abel@gmail.com", response.Correo);
         Assert.Equal("Cliente", response.Rol);
         Assert.True(response.Activo);
 
         usuarioRepo.Verify(r => r.CrearAsync(It.Is<Usuario>(u =>
             u.Nombre == "Abel" &&
-            u.Correo == "abel@mail.com" &&
+            u.Correo == "abel@gmail.com" &&
             u.RolId == 1 &&
             u.Activo &&
             u.PasswordHash != request.Contrasena)), Times.Once);
@@ -47,7 +47,7 @@ public class AuthServiceTests
         var request = new RegistroUsuarioRequest
         {
             Nombre = "   ",
-            Correo = "correo@mail.com",
+            Correo = "correo@gmail.com",
             Contrasena = "Password123!"
         };
 
@@ -75,7 +75,7 @@ public class AuthServiceTests
         var request = new RegistroUsuarioRequest
         {
             Nombre = "Abel",
-            Correo = "correo@mail.com",
+            Correo = "correo@gmail.com",
             Contrasena = " "
         };
 
@@ -89,7 +89,7 @@ public class AuthServiceTests
         var request = new RegistroUsuarioRequest
         {
             Nombre = "Abel",
-            Correo = "correo@mail.com",
+            Correo = "correo@gmail.com",
             Contrasena = "Password123!"
         };
 
@@ -104,7 +104,7 @@ public class AuthServiceTests
     public async Task AutenticarAsync_ConCredencialesValidas_DebeRetornarLoginResponseConRolDelUsuario()
     {
         var service = CrearService(out var usuarioRepo);
-        var correo = "usuario@mail.com";
+        var correo = "usuario@gmail.com";
         var contrasena = "Password123!";
         var usuarioId = Guid.NewGuid();
 
@@ -137,7 +137,7 @@ public class AuthServiceTests
     public async Task AutenticarAsync_ConRolNulo_DebeRetornarRolClientePorDefecto()
     {
         var service = CrearService(out var usuarioRepo);
-        var correo = "cliente@mail.com";
+        var correo = "cliente@gmail.com";
         var contrasena = "Password123!";
 
         var usuario = new Usuario
@@ -181,7 +181,7 @@ public class AuthServiceTests
 
         await Assert.ThrowsAsync<ArgumentException>(() => service.AutenticarAsync(new LoginRequest
         {
-            Correo = "usuario@mail.com",
+            Correo = "usuario@gmail.com",
             Contrasena = " "
         }));
     }
@@ -191,11 +191,11 @@ public class AuthServiceTests
     {
         var service = CrearService(out var usuarioRepo);
 
-        usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync("inexistente@mail.com")).ReturnsAsync((Usuario?)null);
+        usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync("inexistente@gmail.com")).ReturnsAsync((Usuario?)null);
 
         var response = await service.AutenticarAsync(new LoginRequest
         {
-            Correo = "inexistente@mail.com",
+            Correo = "inexistente@gmail.com",
             Contrasena = "Password123!"
         });
 
@@ -206,7 +206,7 @@ public class AuthServiceTests
     public async Task AutenticarAsync_ConContrasenaIncorrecta_DebeRetornarNull()
     {
         var service = CrearService(out var usuarioRepo);
-        var correo = "usuario@mail.com";
+        var correo = "usuario@gmail.com";
 
         usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync(correo)).ReturnsAsync(new Usuario
         {
@@ -231,7 +231,7 @@ public class AuthServiceTests
     public async Task AutenticarAsync_ConUsuarioInactivo_DebeRetornarNull()
     {
         var service = CrearService(out var usuarioRepo);
-        var correo = "inactivo@mail.com";
+        var correo = "inactivo@gmail.com";
         var contrasena = "Password123!";
 
         usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync(correo)).ReturnsAsync(new Usuario
@@ -258,12 +258,12 @@ public class AuthServiceTests
     {
         var service = CrearService(out var usuarioRepo);
 
-        usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync("noexiste@mail.com")).ReturnsAsync((Usuario?)null);
-        usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync("existe@mail.com")).ReturnsAsync(new Usuario
+        usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync("noexiste@gmail.com")).ReturnsAsync((Usuario?)null);
+        usuarioRepo.Setup(r => r.ObtenerPorCorreoAsync("existe@gmail.com")).ReturnsAsync(new Usuario
         {
             Id = Guid.NewGuid(),
             Nombre = "Usuario",
-            Correo = "existe@mail.com",
+            Correo = "existe@gmail.com",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Correcta123!"),
             Activo = true,
             Rol = new Rol { Id = 1, Nombre = "Cliente" }
@@ -271,13 +271,13 @@ public class AuthServiceTests
 
         var usuarioNoExiste = await service.AutenticarAsync(new LoginRequest
         {
-            Correo = "noexiste@mail.com",
+            Correo = "noexiste@gmail.com",
             Contrasena = "Password123!"
         });
 
         var contrasenaInvalida = await service.AutenticarAsync(new LoginRequest
         {
-            Correo = "existe@mail.com",
+            Correo = "existe@gmail.com",
             Contrasena = "Incorrecta123!"
         });
 
